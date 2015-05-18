@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% load simple_tags %}
+{% load filters %}
+
+{% block content %}
+
+    {% h1 page_title %}
+    {% button_new "Novi citat" "/quote/form/" %}
+
+    <table class="grid">
+        {% if rows %}
+            <tr>
+                {% th "Id" "pk" "3" %}
+                {% th "Citat" "quote" "47" "left" %}
+                {% th "Citator" "quoter" "20" "left" %}
+                {% th "Kategorija" "quote_category" "20" "left" %}
+                {% th_operation %}
+            </tr>
+            {% for row in rows %}
+                <tr>
+                    {% td row.pk "pk" %}
+                    {% with link=row.pk|format:"<a href='/quote/details/%s/'>"|add:row.quote|add:"</a>" %}
+                        {% td link "quote" "left" %}
+                    {% endwith %}
+                    {% td row.quoter "quoter" "left" %}
+                    {% td row.quote_category.all|join:", " "quote_category" "left" %}
+                    {% with view=row.pk|format:"<a href='/quote/details/%s/' class='view'></a>" %}
+                    {% with edit=row.pk|format:"<a href='/quote/form/%s/' class='edit'></a>" %}
+                    {% with delete=row.pk|format:"<a href='/quote/delete/%s/' class='delete'></a>" %}
+                        {% td view|add:edit|add:delete %}
+                    {% endwith %}
+                    {% endwith %}
+                    {% endwith %}
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                {% td "Nema zapisa" %}
+            </tr>
+        {% endif %}
+    </table>
+    {% pager rows %}
+
+{% endblock %}
